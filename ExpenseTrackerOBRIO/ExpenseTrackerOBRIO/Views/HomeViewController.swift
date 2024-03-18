@@ -13,6 +13,7 @@ protocol HomeViewProtocol: AnyObject {
     func updateLastUpdated(date: Date)
     func updateBalance(balance: Double)
     func presentAlert()
+    func reloadTransactions()
 }
 
 class HomeViewController: UIViewController, HomeViewProtocol {
@@ -57,6 +58,12 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         return button
     }()
+    
+    var transactionsTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,10 +73,18 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     
     func setupUI() {
         view.backgroundColor = .white
+        
         view.addSubview(currencyLabel)
         view.addSubview(lastUpdatedLabel)
         view.addSubview(balanceLabel)
         view.addSubview(addBitcoinsButton)
+        
+        transactionsTableView.delegate = self
+        transactionsTableView.dataSource = self
+        transactionsTableView.register(TransactionCell.self, forCellReuseIdentifier: TransactionCell.identifier)
+        
+        view.addSubview(transactionsTableView)
+        
         addBitcoinsButton.addTarget(self, action: #selector(presentAddBitcoinsPopup), for: .touchUpInside)
         setConstraints()
     }
@@ -79,6 +94,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         setLastUpdatedLabelConstraints()
         setBalanceLabelConstraints()
         setAddBitcoinsButtonConstraints()
+        setTransactionsTableViewConstraints()
     }
     
     private func setCurrencyLabelConstraints() {
@@ -106,6 +122,15 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         NSLayoutConstraint.activate([
             addBitcoinsButton.centerYAnchor.constraint(equalTo: balanceLabel.centerYAnchor),
             addBitcoinsButton.leadingAnchor.constraint(equalTo: balanceLabel.trailingAnchor, constant: 16)
+        ])
+    }
+    
+    private func setTransactionsTableViewConstraints() {
+        NSLayoutConstraint.activate([
+            transactionsTableView.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor, constant: 70),
+            transactionsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            transactionsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            transactionsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
@@ -152,5 +177,27 @@ extension HomeViewController {
         
         present(alertController, animated: true, completion: nil)
     }
+    
+    func reloadTransactions() {
+        transactionsTableView.reloadData()
+    }
 }
 
+extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        presenter.transactions.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = transactionsTableView.dequeueReusableCell(withIdentifier: TransactionCell.identifier, for: indexPath) as? TransactionCell else {
+            return UITableViewCell()
+        }
+        let transaction = presenter.transactions[indexPath.row]
+        cell.configure(with: transaction)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+    }
+}

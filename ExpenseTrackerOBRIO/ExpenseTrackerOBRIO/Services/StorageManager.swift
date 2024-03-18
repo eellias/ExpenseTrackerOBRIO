@@ -86,6 +86,7 @@ class StorageManager {
     func fetchTransactions() -> [Transaction] {
         var transactions: [Transaction] = []
         let request = NSFetchRequest<Transaction>(entityName: "Transaction")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.transactionDate, ascending: false)]
         do {
             transactions = try self.context.fetch(request)
         } catch let error {

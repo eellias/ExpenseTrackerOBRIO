@@ -9,11 +9,13 @@ import Foundation
 
 protocol HomePresenterProtocol {
     var view: HomeViewProtocol? { get set }
+    var transactions: [Transaction] { get set }
     func viewDidLoad()
     func updateCurrency(currency: BitcoinCurrency)
     func updateBalance()
     func restoreCurrency()
     func addBitcoinsToBalance(amount: Double)
+    func updateTransactions()
 }
 
 class HomePresenter: HomePresenterProtocol {
@@ -22,12 +24,15 @@ class HomePresenter: HomePresenterProtocol {
     
     let storageManager = StorageManager.shared
     
+    var transactions: [Transaction] = []
+    
     init() {
         self.mockCurrency = BitcoinCurrency(time: Time(updatedISO: Date().format("yyyy-MM-dd'T'HH:mm:ssZ")), bpi: Bpi(usd: USD(symbol: "&#36;", rate: "68,108.108", rate_float: 68108.1081)))
     }
     
     func viewDidLoad() {
         updateBalance()
+        updateTransactions()
     }
     
     func updateCurrency(currency: BitcoinCurrency) {
@@ -55,6 +60,12 @@ class HomePresenter: HomePresenterProtocol {
         storageManager.addBitcoins(amount: amount)
         storageManager.addTransaction(type: false, amount: amount, category: nil)
         self.updateBalance()
+        self.updateTransactions()
+        view?.reloadTransactions()
+    }
+    
+    func updateTransactions() {
+        self.transactions = storageManager.fetchTransactions()
     }
 }
 
