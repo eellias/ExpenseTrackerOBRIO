@@ -13,7 +13,7 @@ struct BitcoinCurrency: Codable {
 }
 
 struct Time: Codable {
-    let updated: String
+    let updatedISO: String
 }
 
 struct Bpi: Codable {

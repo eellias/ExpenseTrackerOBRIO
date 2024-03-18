@@ -10,7 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    var coordinator: AppCoordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -18,11 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        let viewController = ViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
+        let navigationController = UINavigationController()
         window.rootViewController = navigationController
         self.window = window
         window.makeKeyAndVisible()
+        coordinator = AppCoordinator(navigationController: navigationController)
+        coordinator?.start()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -45,6 +46,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        let lastUpdateDate = UserDefaults.standard.object(forKey: "lastBitcoinCurrencyUpdateDate") as? Date ?? Date().addingTimeInterval(-3600)
+        let elapsedTime = Date().timeIntervalSince(lastUpdateDate)
+        var fetchedCurrency: BitcoinCurrency?
+        
+        if elapsedTime >= 3600 {
+            let apiService = APIService(urlString: "https://api.coindesk.com/v1/bpi/currentprice.json")
+            
+            DispatchQueue.main.async {
+                apiService.getJSON { (result: Result<BitcoinCurrency, APIError>) in
+                    switch result {
+                    case .success(let currency):
+                        fetchedCurrency = currency
+                    case .failure(_):
+                        fetchedCurrency = nil
+                    }
+                }
+            }
+            
+            if let currency = fetchedCurrency {
+                if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                    homeVC.presenter.updateCurrency(currency: currency, isFailed: false)
+                }
+            } else {
+                if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                    homeVC.presenter.updateCurrency(currency: nil, isFailed: true)
+                }
+            }
+        } else {
+            if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                homeVC.presenter.restoreCurrency()
+            }
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
