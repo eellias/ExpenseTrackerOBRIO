@@ -48,7 +48,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to undo the changes made on entering the background.
         let lastUpdateDate = UserDefaults.standard.object(forKey: "lastBitcoinCurrencyUpdateDate") as? Date ?? Date().addingTimeInterval(-3600)
         let elapsedTime = Date().timeIntervalSince(lastUpdateDate)
-        var fetchedCurrency: BitcoinCurrency?
         
         if elapsedTime >= 3600 {
             let apiService = APIService(urlString: "https://api.coindesk.com/v1/bpi/currentprice.json")
@@ -57,20 +56,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 apiService.getJSON { (result: Result<BitcoinCurrency, APIError>) in
                     switch result {
                     case .success(let currency):
-                        fetchedCurrency = currency
+                        DispatchQueue.main.async {
+                            if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                                homeVC.presenter.updateCurrency(currency: currency)
+                            }
+                        }
                     case .failure(_):
-                        fetchedCurrency = nil
+                        DispatchQueue.main.async {
+                            if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                                homeVC.presenter.restoreCurrency()
+                            }
+                        }
                     }
-                }
-            }
-            
-            if let currency = fetchedCurrency {
-                if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
-                    homeVC.presenter.updateCurrency(currency: currency, isFailed: false)
-                }
-            } else {
-                if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
-                    homeVC.presenter.updateCurrency(currency: nil, isFailed: true)
                 }
             }
         } else {
