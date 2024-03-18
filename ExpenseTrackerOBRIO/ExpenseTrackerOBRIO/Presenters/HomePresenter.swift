@@ -10,6 +10,7 @@ import Foundation
 protocol HomePresenterProtocol {
     var view: HomeViewProtocol? { get set }
     var transactions: [Transaction] { get set }
+    var groupedTransactions: [Date:[Transaction]] { get }
     func viewDidLoad()
     func updateCurrency(currency: BitcoinCurrency)
     func updateBalance()
@@ -27,6 +28,16 @@ class HomePresenter: HomePresenterProtocol {
     let storageManager = StorageManager.shared
     
     var transactions: [Transaction] = []
+    
+    var groupedTransactions: [Date:[Transaction]] {
+        Dictionary(grouping: transactions) { transaction in
+            if let date = transaction.transactionDate {
+                return Calendar.current.startOfDay(for: date)
+            } else {
+                return Date()
+            }
+        }
+    }
     
     init() {
         self.mockCurrency = BitcoinCurrency(time: Time(updatedISO: Date().format("yyyy-MM-dd'T'HH:mm:ssZ")), bpi: Bpi(usd: USD(symbol: "&#36;", rate: "68,108.108", rate_float: 68108.1081)))

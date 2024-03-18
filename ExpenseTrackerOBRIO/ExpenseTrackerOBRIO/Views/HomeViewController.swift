@@ -204,25 +204,35 @@ extension HomeViewController {
 }
 
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        presenter.groupedTransactions.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        presenter.transactions.count
+        let date = Array(presenter.groupedTransactions.keys).sorted(by: >)[section]
+        return presenter.groupedTransactions[date]?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let date = Array(presenter.groupedTransactions.keys).sorted(by: >)[section]
+        return date.format("dd MMM")
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = transactionsTableView.dequeueReusableCell(withIdentifier: TransactionCell.identifier, for: indexPath) as? TransactionCell else {
             return UITableViewCell()
         }
-        let transaction = presenter.transactions[indexPath.row]
-        cell.configure(with: transaction)
+        let date = Array(presenter.groupedTransactions.keys).sorted(by: >)[indexPath.section]
+        if let transactions = presenter.groupedTransactions[date] {
+            let transaction = transactions[indexPath.row]
+            cell.configure(with: transaction)
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        print(indexPath.row)
-        print(presenter.transactions.count - 1)
-        print(hasMoreData)
-        if indexPath.row == presenter.transactions.count - 1 && hasMoreData {
-            print("Last row")
+        if indexPath.section == tableView.numberOfSections - 1 && indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 && hasMoreData {
             loadMoreData()
         }
     }
