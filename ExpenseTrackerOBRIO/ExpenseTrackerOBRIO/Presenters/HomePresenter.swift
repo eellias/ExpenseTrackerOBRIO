@@ -13,6 +13,7 @@ protocol HomePresenterProtocol {
     func updateCurrency(currency: BitcoinCurrency)
     func updateBalance()
     func restoreCurrency()
+    func addBitcoinsToBalance(amount: Double)
 }
 
 class HomePresenter: HomePresenterProtocol {
@@ -21,12 +22,8 @@ class HomePresenter: HomePresenterProtocol {
     
     let storageManager = StorageManager.shared
     
-    var balance: Balance?
-    
     init() {
         self.mockCurrency = BitcoinCurrency(time: Time(updatedISO: Date().format("yyyy-MM-dd'T'HH:mm:ssZ")), bpi: Bpi(usd: USD(symbol: "&#36;", rate: "68,108.108", rate_float: 68108.1081)))
-        
-        self.balance = storageManager.fetchBalance()
     }
     
     func viewDidLoad() {
@@ -50,7 +47,13 @@ class HomePresenter: HomePresenterProtocol {
     }
     
     func updateBalance() {
-        view?.updateBalance(balance: self.balance?.balance ?? 0.0)
+        let balance = storageManager.fetchBalance()
+        view?.updateBalance(balance: balance?.balance ?? 0.0)
+    }
+    
+    func addBitcoinsToBalance(amount: Double) {
+        storageManager.addBitcoins(amount: amount)
+        self.updateBalance()
     }
 }
 

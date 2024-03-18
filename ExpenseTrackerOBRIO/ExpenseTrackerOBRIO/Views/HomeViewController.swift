@@ -47,6 +47,16 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    var addBitcoinsButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.clipsToBounds = true
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +69,8 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         view.addSubview(currencyLabel)
         view.addSubview(lastUpdatedLabel)
         view.addSubview(balanceLabel)
+        view.addSubview(addBitcoinsButton)
+        addBitcoinsButton.addTarget(self, action: #selector(presentAddBitcoinsPopup), for: .touchUpInside)
         setConstraints()
     }
     
@@ -66,6 +78,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         setCurrencyLabelConstraints()
         setLastUpdatedLabelConstraints()
         setBalanceLabelConstraints()
+        setAddBitcoinsButtonConstraints()
     }
     
     private func setCurrencyLabelConstraints() {
@@ -88,6 +101,13 @@ class HomeViewController: UIViewController, HomeViewProtocol {
             balanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
+    
+    private func setAddBitcoinsButtonConstraints() {
+        NSLayoutConstraint.activate([
+            addBitcoinsButton.centerYAnchor.constraint(equalTo: balanceLabel.centerYAnchor),
+            addBitcoinsButton.leadingAnchor.constraint(equalTo: balanceLabel.trailingAnchor, constant: 16)
+        ])
+    }
 }
 
 extension HomeViewController {
@@ -103,11 +123,34 @@ extension HomeViewController {
         let alertController = UIAlertController(title: "Cannot update bitcoin currency", message: "Check your internet connection", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         
-        self.present(alertController, animated: false, completion: nil)
+        present(alertController, animated: false, completion: nil)
     }
     
     func updateBalance(balance: Double) {
         balanceLabel.text = String(format: "%.2f", balance)
+    }
+    
+    @objc func presentAddBitcoinsPopup() {
+        let alertController = UIAlertController(title: "How many bitcoins do you want to add?", message: nil, preferredStyle: .alert)
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Amount"
+            textField.keyboardType = .decimalPad
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let addAction = UIAlertAction(title: "Add", style: .default) { (_) in
+            if let textField = alertController.textFields?.first {
+                if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")) {
+                    self.presenter.addBitcoinsToBalance(amount: amount)
+                }
+            }
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(addAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 

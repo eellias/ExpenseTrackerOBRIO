@@ -15,8 +15,6 @@ class StorageManager {
     private let container: NSPersistentContainer
     private let containerName: String = "ExpenseTrackerOBRIO"
     
-    private(set) var balances: [Balance] = []
-    
     var isPassedFirstSession: Bool {
         get { UserDefaults.standard.bool(forKey: "isPassedFirstSession") }
         set { UserDefaults.standard.set(newValue, forKey: "isPassedFirstSession") }
@@ -59,6 +57,15 @@ class StorageManager {
             } catch {
                 print(error.localizedDescription)
             }
+        }
+    }
+    
+    func addBitcoins(amount: Double) {
+        let balance = fetchBalance()
+        
+        if let balance = balance {
+            balance.balance += amount
+            self.saveContext()
         }
     }
 }
