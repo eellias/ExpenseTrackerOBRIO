@@ -41,6 +41,17 @@ class StorageManager {
         }
     }
     
+    func fetchBalance() -> Balance? {
+        var balance: Balance?
+        let request = NSFetchRequest<Balance>(entityName: "Balance")
+        do {
+            balance = try self.context.fetch(request).first
+        } catch let error {
+            print("Error fetching saved data: \(error)")
+        }
+        return balance
+    }
+    
     func saveContext() {
         if context.hasChanges {
             do {

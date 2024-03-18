@@ -11,6 +11,7 @@ protocol HomeViewProtocol: AnyObject {
     func setupUI()
     func updateCurrency(currency: BitcoinCurrency)
     func updateLastUpdated(date: Date)
+    func updateBalance(balance: Double)
     func presentAlert()
 }
 
@@ -37,6 +38,15 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    var balanceLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 48)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,12 +58,14 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         view.backgroundColor = .white
         view.addSubview(currencyLabel)
         view.addSubview(lastUpdatedLabel)
+        view.addSubview(balanceLabel)
         setConstraints()
     }
     
     private func setConstraints() {
         setCurrencyLabelConstraints()
         setLastUpdatedLabelConstraints()
+        setBalanceLabelConstraints()
     }
     
     private func setCurrencyLabelConstraints() {
@@ -67,6 +79,13 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         NSLayoutConstraint.activate([
             lastUpdatedLabel.topAnchor.constraint(equalTo: currencyLabel.bottomAnchor, constant: 4),
             lastUpdatedLabel.trailingAnchor.constraint(equalTo: currencyLabel.trailingAnchor, constant: 0)
+        ])
+    }
+    
+    private func setBalanceLabelConstraints() {
+        NSLayoutConstraint.activate([
+            balanceLabel.topAnchor.constraint(equalTo: lastUpdatedLabel.bottomAnchor, constant: 50),
+            balanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 }
@@ -85,6 +104,10 @@ extension HomeViewController {
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         
         self.present(alertController, animated: false, completion: nil)
+    }
+    
+    func updateBalance(balance: Double) {
+        balanceLabel.text = String(format: "%.2f", balance)
     }
 }
 
