@@ -15,10 +15,12 @@ protocol HomePresenterProtocol {
     func updateBalance()
     func restoreCurrency()
     func addBitcoinsToBalance(amount: Double)
+    func loadMoreTransactions(page: Int, pageSize: Int)
     func updateTransactions()
 }
 
 class HomePresenter: HomePresenterProtocol {
+    
     weak var view: HomeViewProtocol?
     let mockCurrency: BitcoinCurrency
     
@@ -61,11 +63,19 @@ class HomePresenter: HomePresenterProtocol {
         storageManager.addTransaction(type: false, amount: amount, category: nil)
         self.updateBalance()
         self.updateTransactions()
-        view?.reloadTransactions()
     }
     
     func updateTransactions() {
-        self.transactions = storageManager.fetchTransactions()
+        self.transactions = storageManager.fetchTransactions(page: 1, pageSize: 20)
+        view?.reloadTransactions()
+    }
+    
+    func loadMoreTransactions(page: Int, pageSize: Int) {
+        let newTransactions = storageManager.fetchTransactions(page: page, pageSize: pageSize)
+        if !newTransactions.isEmpty {
+            self.transactions.append(contentsOf: newTransactions)
+            view?.updateTransactions(newTransactions: newTransactions)
+        }
     }
 }
 

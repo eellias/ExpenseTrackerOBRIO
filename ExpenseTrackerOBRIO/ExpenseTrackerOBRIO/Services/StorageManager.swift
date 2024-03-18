@@ -83,10 +83,13 @@ class StorageManager {
         self.saveContext()
     }
     
-    func fetchTransactions() -> [Transaction] {
+    func fetchTransactions(page: Int, pageSize: Int) -> [Transaction] {
         var transactions: [Transaction] = []
         let request = NSFetchRequest<Transaction>(entityName: "Transaction")
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Transaction.transactionDate, ascending: false)]
+        request.fetchLimit = pageSize
+        request.fetchOffset = (page - 1) * pageSize
+        
         do {
             transactions = try self.context.fetch(request)
         } catch let error {

@@ -14,11 +14,17 @@ protocol HomeViewProtocol: AnyObject {
     func updateBalance(balance: Double)
     func presentAlert()
     func reloadTransactions()
+    func updateTransactions(newTransactions: [Transaction])
 }
 
 class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol!
     weak var coordinator: AppCoordinator?
+    
+    private var hasMoreData = true
+    
+    private var currentPage = 1
+    private let pageSize = 20
     
     var currencyLabel: UILabel = {
         let label = UILabel()
@@ -168,6 +174,7 @@ extension HomeViewController {
             if let textField = alertController.textFields?.first {
                 if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), text.first != "0" {
                     self.presenter.addBitcoinsToBalance(amount: amount)
+                    self.currentPage = 1
                 }
             }
         }
@@ -180,6 +187,19 @@ extension HomeViewController {
     
     func reloadTransactions() {
         transactionsTableView.reloadData()
+    }
+    
+    private func loadMoreData() {
+        currentPage += 1
+        presenter.loadMoreTransactions(page: currentPage, pageSize: pageSize)
+    }
+    
+    func updateTransactions(newTransactions: [Transaction]) {
+        if newTransactions.isEmpty {
+            hasMoreData = false
+        } else {
+            self.reloadTransactions()
+        }
     }
 }
 
@@ -198,6 +218,12 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
+        print(indexPath.row)
+        print(presenter.transactions.count - 1)
+        print(hasMoreData)
+        if indexPath.row == presenter.transactions.count - 1 && hasMoreData {
+            print("Last row")
+            loadMoreData()
+        }
     }
 }
