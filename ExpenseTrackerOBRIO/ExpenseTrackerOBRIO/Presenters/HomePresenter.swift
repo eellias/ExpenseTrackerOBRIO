@@ -23,17 +23,19 @@ class HomePresenter: HomePresenterProtocol {
     }
     
     func viewDidLoad() {
-        updateLastUpdated()
+        
     }
     
     func updateCurrency(currency: BitcoinCurrency) {
         view?.updateCurrency(currency: currency)
         UserDefaults.standard.setValue(Date(), forKey: "lastBitcoinCurrencyUpdateDate")
         self.encodeCurrencyData(currencyToStore: currency)
+        updateLastUpdated()
     }
     
     func restoreCurrency() {
         view?.updateCurrency(currency: self.decodeCurrencyData() ?? mockCurrency)
+        updateLastUpdated()
     }
     
     func updateLastUpdated() {

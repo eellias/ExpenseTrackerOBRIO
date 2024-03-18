@@ -11,6 +11,7 @@ protocol HomeViewProtocol: AnyObject {
     func setupUI()
     func updateCurrency(currency: BitcoinCurrency)
     func updateLastUpdated(date: Date)
+    func presentAlert()
 }
 
 class HomeViewController: UIViewController, HomeViewProtocol {
@@ -75,6 +76,13 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     
     func updateLastUpdated(date: Date) {
         lastUpdatedLabel.text = "Last updated: " + date.format("dd MMM HH:mm")
+    }
+    
+    func presentAlert() {
+        let alertController = UIAlertController(title: "Cannot update bitcoin currency", message: "Check your internet connection", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        self.present(alertController, animated: false, completion: nil)
     }
 }
 

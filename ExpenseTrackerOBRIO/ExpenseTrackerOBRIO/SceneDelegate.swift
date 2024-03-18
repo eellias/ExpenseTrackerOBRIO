@@ -48,6 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to undo the changes made on entering the background.
         let lastUpdateDate = UserDefaults.standard.object(forKey: "lastBitcoinCurrencyUpdateDate") as? Date ?? Date().addingTimeInterval(-3600)
         let elapsedTime = Date().timeIntervalSince(lastUpdateDate)
+        let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController
         
         if elapsedTime >= 3600 {
             let apiService = APIService(urlString: "https://api.coindesk.com/v1/bpi/currentprice.json")
@@ -57,21 +58,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     switch result {
                     case .success(let currency):
                         DispatchQueue.main.async {
-                            if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                            if let homeVC = homeVC {
                                 homeVC.presenter.updateCurrency(currency: currency)
                             }
                         }
                     case .failure(_):
+                        print("Failure")
                         DispatchQueue.main.async {
-                            if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+                            if let homeVC = homeVC {
                                 homeVC.presenter.restoreCurrency()
                             }
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            homeVC?.presentAlert()
                         }
                     }
                 }
             }
         } else {
-            if let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController {
+            if let homeVC = homeVC {
                 homeVC.presenter.restoreCurrency()
             }
         }
