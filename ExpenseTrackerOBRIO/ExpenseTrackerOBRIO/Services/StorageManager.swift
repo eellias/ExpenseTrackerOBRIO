@@ -68,4 +68,29 @@ class StorageManager {
             self.saveContext()
         }
     }
+    
+    func addTransaction(type: Bool, amount: Double, date: Date = Date(), category: String?) {
+        let newTransaction = Transaction(context: self.context)
+        
+        newTransaction.transactionType = type
+        newTransaction.transactionAmount = amount
+        newTransaction.transactionDate = date
+        newTransaction.transactionCategory = category ?? ""
+        
+        let balance = fetchBalance()
+        balance?.addToTransactions(newTransaction)
+        
+        self.saveContext()
+    }
+    
+    func fetchTransactions() -> [Transaction] {
+        var transactions: [Transaction] = []
+        let request = NSFetchRequest<Transaction>(entityName: "Transaction")
+        do {
+            transactions = try self.context.fetch(request)
+        } catch let error {
+            print("Error fetching saved data: \(error)")
+        }
+        return transactions
+    }
 }

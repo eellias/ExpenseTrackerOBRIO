@@ -53,6 +53,7 @@ class HomePresenter: HomePresenterProtocol {
     
     func addBitcoinsToBalance(amount: Double) {
         storageManager.addBitcoins(amount: amount)
+        storageManager.addTransaction(type: false, amount: amount, category: nil)
         self.updateBalance()
     }
 }

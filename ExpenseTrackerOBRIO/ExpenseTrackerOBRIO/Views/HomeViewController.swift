@@ -141,7 +141,7 @@ extension HomeViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let addAction = UIAlertAction(title: "Add", style: .default) { (_) in
             if let textField = alertController.textFields?.first {
-                if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")) {
+                if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), text.first != "0" {
                     self.presenter.addBitcoinsToBalance(amount: amount)
                 }
             }
