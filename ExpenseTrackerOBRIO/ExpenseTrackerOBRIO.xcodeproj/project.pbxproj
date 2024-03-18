@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		690538522BA83EBD002DDD0A /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690538512BA83EBD002DDD0A /* APIService.swift */; };
+		690538552BA83FD1002DDD0A /* BitcoinCurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690538542BA83FD1002DDD0A /* BitcoinCurrency.swift */; };
 		696A44882BA71D5700A7FE74 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696A44872BA71D5700A7FE74 /* AppDelegate.swift */; };
 		696A448A2BA71D5700A7FE74 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696A44892BA71D5700A7FE74 /* SceneDelegate.swift */; };
 		696A448C2BA71D5700A7FE74 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696A448B2BA71D5700A7FE74 /* ViewController.swift */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		690538512BA83EBD002DDD0A /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		690538542BA83FD1002DDD0A /* BitcoinCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitcoinCurrency.swift; sourceTree = "<group>"; };
 		696A44842BA71D5700A7FE74 /* ExpenseTrackerOBRIO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpenseTrackerOBRIO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		696A44872BA71D5700A7FE74 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		696A44892BA71D5700A7FE74 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +41,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		690538502BA83EAF002DDD0A /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				690538512BA83EBD002DDD0A /* APIService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		690538532BA83FBF002DDD0A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				690538542BA83FD1002DDD0A /* BitcoinCurrency.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		696A447B2BA71D5700A7FE74 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +76,8 @@
 		696A44862BA71D5700A7FE74 /* ExpenseTrackerOBRIO */ = {
 			isa = PBXGroup;
 			children = (
+				690538532BA83FBF002DDD0A /* Models */,
+				690538502BA83EAF002DDD0A /* Services */,
 				696A44872BA71D5700A7FE74 /* AppDelegate.swift */,
 				696A44892BA71D5700A7FE74 /* SceneDelegate.swift */,
 				696A448B2BA71D5700A7FE74 /* ViewController.swift */,
@@ -138,7 +160,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				696A448C2BA71D5700A7FE74 /* ViewController.swift in Sources */,
+				690538522BA83EBD002DDD0A /* APIService.swift in Sources */,
 				696A44882BA71D5700A7FE74 /* AppDelegate.swift in Sources */,
+				690538552BA83FD1002DDD0A /* BitcoinCurrency.swift in Sources */,
 				696A44922BA71D5700A7FE74 /* ExpenseTrackerOBRIO.xcdatamodeld in Sources */,
 				696A448A2BA71D5700A7FE74 /* SceneDelegate.swift in Sources */,
 			);
