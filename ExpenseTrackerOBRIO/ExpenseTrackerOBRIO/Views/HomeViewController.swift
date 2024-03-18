@@ -69,7 +69,9 @@ class HomeViewController: UIViewController, HomeViewProtocol {
             lastUpdatedLabel.trailingAnchor.constraint(equalTo: currencyLabel.trailingAnchor, constant: 0)
         ])
     }
-    
+}
+
+extension HomeViewController {
     func updateCurrency(currency: BitcoinCurrency) {
         currencyLabel.text = String(format: "%.2f", currency.bpi.usd.rate_float) + "$"
     }

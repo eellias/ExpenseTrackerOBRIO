@@ -18,6 +18,8 @@ class HomePresenter: HomePresenterProtocol {
     weak var view: HomeViewProtocol?
     let mockCurrency: BitcoinCurrency
     
+    let storageManager = StorageManager.shared
+    
     init() {
         self.mockCurrency = BitcoinCurrency(time: Time(updatedISO: Date().format("yyyy-MM-dd'T'HH:mm:ssZ")), bpi: Bpi(usd: USD(symbol: "&#36;", rate: "68,108.108", rate_float: 68108.1081)))
     }

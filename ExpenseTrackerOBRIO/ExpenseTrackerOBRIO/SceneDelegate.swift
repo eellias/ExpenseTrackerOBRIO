@@ -49,9 +49,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let lastUpdateDate = UserDefaults.standard.object(forKey: "lastBitcoinCurrencyUpdateDate") as? Date ?? Date().addingTimeInterval(-3600)
         let elapsedTime = Date().timeIntervalSince(lastUpdateDate)
         let homeVC = self.coordinator?.navigationController.viewControllers.first as? HomeViewController
-        
         if elapsedTime >= 3600 {
             let apiService = APIService(urlString: "https://api.coindesk.com/v1/bpi/currentprice.json")
+            
+            if let homeVC = homeVC {
+                homeVC.presenter.restoreCurrency()
+            }
             
             DispatchQueue.main.async {
                 apiService.getJSON { (result: Result<BitcoinCurrency, APIError>) in
@@ -88,7 +91,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        StorageManager.shared.saveContext()
     }
 
 
