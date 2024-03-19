@@ -195,22 +195,38 @@ extension HomeViewController {
         alertController.addTextField { (textField) in
             textField.placeholder = "Amount"
             textField.keyboardType = .decimalPad
+            textField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let addAction = UIAlertAction(title: "Add", style: .default) { (_) in
             if let textField = alertController.textFields?.first {
-                if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), text.first != "0" {
+                if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount != 0.0 {
                     self.presenter.addBitcoinsToBalance(amount: amount)
                     self.currentPage = 1
                 }
             }
         }
         
+        addAction.isEnabled = false
+        
         alertController.addAction(cancelAction)
         alertController.addAction(addAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        if let alertController = presentedViewController as? UIAlertController {
+            let textFields = alertController.textFields
+            let addAction = alertController.actions.last
+
+            if let text = textFields?[0].text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount != 0.0 {
+                addAction?.isEnabled = true
+            } else {
+                addAction?.isEnabled = false
+            }
+        }
     }
     
     func reloadTransactions() {

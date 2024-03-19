@@ -22,7 +22,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
     var selectedCategory: String?
     
     var canSave: Bool {
-        guard let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), text.first != "0" else {
+        guard let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount != 0.0 else {
             return false
         }
         return true
@@ -118,7 +118,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
 
 extension TransactionAddingViewController {
     @objc func addTransactionTapped() {
-        if let text = amountTextField.text, let amount = Double(text) {
+        if let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")) {
             presenter.addTransaction(amount: amount, category: self.selectedCategory ?? "Other")
         }
     }
