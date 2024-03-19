@@ -7,16 +7,6 @@
 
 import UIKit
 
-protocol HomeViewProtocol: AnyObject {
-    func setupUI()
-    func updateCurrency(currency: BitcoinCurrency)
-    func updateLastUpdated(date: Date)
-    func updateBalance(balance: Double)
-    func presentAlert()
-    func reloadTransactions()
-    func updateTransactions(newTransactions: [Transaction])
-}
-
 class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol!
     
@@ -55,12 +45,15 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     }()
     
     private var addBitcoinsButton: UIButton = {
-        let button = UIButton(type: .custom)
+        var configuration = UIButton.Configuration.filled()
+        configuration.cornerStyle = .capsule
+        configuration.baseBackgroundColor = .blue
+        configuration.baseForegroundColor = .white
+        configuration.image = UIImage(systemName: "plus")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+
+        let button = UIButton(configuration: configuration, primaryAction: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        button.clipsToBounds = true
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         return button
     }()
     
@@ -103,8 +96,11 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         super.viewDidAppear(animated)
         presenter.viewDidLoad()
     }
-    
-    func setupUI() {
+}
+
+// MARK: - UI Setting Functions
+extension HomeViewController {
+    private func setupUI() {
         view.backgroundColor = .white
         
         view.addSubview(currencyLabel)
@@ -178,6 +174,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     }
 }
 
+// MARK: - User Actions Functions
 extension HomeViewController {
     func updateCurrency(currency: BitcoinCurrency) {
         currencyLabel.text = String(format: "%.2f", currency.bpi.usd.rate_float) + "$"
@@ -213,6 +210,7 @@ extension HomeViewController {
                 if let text = textField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount != 0.0 {
                     self.presenter.addBitcoinsToBalance(amount: amount)
                     self.currentPage = 1
+                    self.hasMoreData = true
                 }
             }
         }
@@ -258,9 +256,12 @@ extension HomeViewController {
     
     @objc func addTransaction() {
         presenter.addTransaction()
+        self.currentPage = 1
+        self.hasMoreData = true
     }
 }
 
+// MARK: - UITableViewDataSource and UITableViewDelegate Functions
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         presenter.groupedTransactions.count

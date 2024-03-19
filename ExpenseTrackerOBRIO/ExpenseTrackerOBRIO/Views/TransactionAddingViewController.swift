@@ -8,14 +8,6 @@
 import Foundation
 import UIKit
 
-protocol TransactionAddingViewProtocol: AnyObject {
-    var selectedCategory: String? { get set }
-    func setupUI()
-    func setConstraints()
-    func addTransactionTapped()
-    func didSelectTransactionCategory(_ category: String)
-}
-
 class TransactionAddingViewController: UIViewController, TransactionAddingViewProtocol {
     var presenter: TransactionAddingPresenterProtocol!
     private let transactionCategories = ["Groceries", "Taxi", "Electronics", "Restaurant", "Other"]
@@ -62,8 +54,11 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         super.viewDidLoad()
         setupUI()
     }
-    
-    func setupUI() {
+}
+
+// MARK: - UI Setting Functions
+extension TransactionAddingViewController {
+    private func setupUI() {
         view.backgroundColor = .white
         view.addSubview(amountTextField)
         view.addSubview(categoryPicker)
@@ -95,7 +90,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         setConstraints()
     }
     
-    func setConstraints() {
+    private func setConstraints() {
         setAmountTextFieldConstraints()
         setCategoryPickerConstraints()
         setAddTransactionButtonConstraints()
@@ -124,6 +119,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
     }
 }
 
+// MARK: - User actions functions
 extension TransactionAddingViewController {
     @objc func addTransactionTapped() {
         if let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")) {
@@ -144,6 +140,7 @@ extension TransactionAddingViewController {
     }
 }
 
+// MARK: - UIPickerViewDelegate and UIPickerViewDataSource functions
 extension TransactionAddingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
@@ -163,7 +160,7 @@ extension TransactionAddingViewController: UIPickerViewDelegate, UIPickerViewDat
     }
 }
 
-
+// MARK: - UITextFieldDelegate functions
 extension TransactionAddingViewController: UITextFieldDelegate {
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
