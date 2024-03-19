@@ -65,6 +65,19 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         return button
     }()
     
+    var addTransactionButton: UIButton = {
+        var configuration = UIButton.Configuration.filled()
+        configuration.cornerStyle = .capsule
+        configuration.baseBackgroundColor = .blue
+        configuration.baseForegroundColor = .white
+        configuration.title = "New transaction"
+        configuration.titleAlignment = .center
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14)
+        let button = UIButton(configuration: configuration, primaryAction: nil)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     var transactionsTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -84,6 +97,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         view.addSubview(lastUpdatedLabel)
         view.addSubview(balanceLabel)
         view.addSubview(addBitcoinsButton)
+        view.addSubview(addTransactionButton)
         
         transactionsTableView.delegate = self
         transactionsTableView.dataSource = self
@@ -92,6 +106,8 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         view.addSubview(transactionsTableView)
         
         addBitcoinsButton.addTarget(self, action: #selector(presentAddBitcoinsPopup), for: .touchUpInside)
+        addTransactionButton.addTarget(self, action: #selector(addTransaction), for: .touchUpInside)
+        
         setConstraints()
     }
     
@@ -99,6 +115,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         setCurrencyLabelConstraints()
         setLastUpdatedLabelConstraints()
         setBalanceLabelConstraints()
+        setAddTransactionButtonConstraints()
         setAddBitcoinsButtonConstraints()
         setTransactionsTableViewConstraints()
     }
@@ -124,6 +141,13 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         ])
     }
     
+    private func setAddTransactionButtonConstraints() {
+        NSLayoutConstraint.activate([
+            addTransactionButton.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor, constant: 16),
+            addTransactionButton.centerXAnchor.constraint(equalTo: balanceLabel.centerXAnchor)
+        ])
+    }
+    
     private func setAddBitcoinsButtonConstraints() {
         NSLayoutConstraint.activate([
             addBitcoinsButton.centerYAnchor.constraint(equalTo: balanceLabel.centerYAnchor),
@@ -133,7 +157,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     
     private func setTransactionsTableViewConstraints() {
         NSLayoutConstraint.activate([
-            transactionsTableView.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor, constant: 70),
+            transactionsTableView.topAnchor.constraint(equalTo: addTransactionButton.bottomAnchor, constant: 70),
             transactionsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             transactionsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             transactionsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -200,6 +224,10 @@ extension HomeViewController {
         } else {
             self.reloadTransactions()
         }
+    }
+    
+    @objc func addTransaction() {
+        coordinator?.navigateToTransactionAddingScreen()
     }
 }
 

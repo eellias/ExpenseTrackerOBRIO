@@ -31,6 +31,11 @@ final class AppCoordinator: Coordinator {
     }
     
     func navigateToTransactionAddingScreen() {
-        
+        let transactionAddingViewController = TransactionAddingViewController()
+        let transactionAddingPresenter = TransactionAddingPresenter()
+        transactionAddingPresenter.view = transactionAddingViewController
+        transactionAddingViewController.presenter = transactionAddingPresenter
+        transactionAddingViewController.coordinator = self
+        navigationController.pushViewController(transactionAddingViewController, animated: true)
     }
 }
