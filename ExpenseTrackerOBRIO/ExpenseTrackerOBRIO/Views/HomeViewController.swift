@@ -20,7 +20,6 @@ protocol HomeViewProtocol: AnyObject {
 class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol!
     
-    
     private var hasMoreData = true
     
     private var currentPage = 1
@@ -83,14 +82,25 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
+    
+    private func createLoaderView() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 50))
+        
+        let loaderView = UIActivityIndicatorView()
+        loaderView.center = footerView.center
+        footerView.addSubview(loaderView)
+        loaderView.startAnimating()
+        
+        return footerView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         presenter.viewDidLoad()
     }
     
@@ -102,12 +112,11 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         view.addSubview(balanceLabel)
         view.addSubview(addBitcoinsButton)
         view.addSubview(addTransactionButton)
+        view.addSubview(transactionsTableView)
         
         transactionsTableView.delegate = self
         transactionsTableView.dataSource = self
         transactionsTableView.register(TransactionCell.self, forCellReuseIdentifier: TransactionCell.identifier)
-        
-        view.addSubview(transactionsTableView)
         
         addBitcoinsButton.addTarget(self, action: #selector(presentAddBitcoinsPopup), for: .touchUpInside)
         addTransactionButton.addTarget(self, action: #selector(addTransaction), for: .touchUpInside)
@@ -236,6 +245,7 @@ extension HomeViewController {
     private func loadMoreData() {
         currentPage += 1
         presenter.loadMoreTransactions(page: currentPage, pageSize: pageSize)
+        transactionsTableView.tableFooterView = nil
     }
     
     func updateTransactions(newTransactions: [Transaction]) {
@@ -281,7 +291,10 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section == tableView.numberOfSections - 1 && indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 && hasMoreData {
-            loadMoreData()
+            transactionsTableView.tableFooterView = createLoaderView()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.loadMoreData()
+            }
         }
     }
 }
