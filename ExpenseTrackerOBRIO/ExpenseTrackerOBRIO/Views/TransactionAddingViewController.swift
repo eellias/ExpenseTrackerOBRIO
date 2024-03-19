@@ -73,6 +73,14 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
         
+        self.selectedCategory = self.transactionCategories.first
+        
+        if let selectedCategory = selectedCategory {
+            if let index = transactionCategories.firstIndex(of: selectedCategory) {
+                categoryPicker.selectRow(index, inComponent: 0, animated: false)
+            }
+        }
+        
         addTransactionButton.isEnabled = canSave
         addTransactionButton.addTarget(self, action: #selector(addTransactionTapped), for: .touchUpInside)
         
@@ -110,7 +118,9 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
 
 extension TransactionAddingViewController {
     @objc func addTransactionTapped() {
-        presenter.addTransaction()
+        if let text = amountTextField.text, let amount = Double(text) {
+            presenter.addTransaction(amount: amount, category: self.selectedCategory ?? "Other")
+        }
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {

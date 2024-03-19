@@ -11,7 +11,7 @@ protocol TransactionAddingPresenterProtocol {
     var view: TransactionAddingViewProtocol? { get set }
     var coordinator: AppCoordinator? { get set }
     
-    func addTransaction()
+    func addTransaction(amount: Double, category: String)
     func didSelectTransactionCategory(_ category: String)
 }
 
@@ -19,7 +19,11 @@ class TransactionAddingPresenter: TransactionAddingPresenterProtocol {
     weak var view: TransactionAddingViewProtocol?
     weak var coordinator: AppCoordinator?
     
-    func addTransaction() {
+    let storageManager = StorageManager.shared
+    
+    func addTransaction(amount: Double, category: String) {
+        storageManager.addTransaction(type: true, amount: amount, category: category)
+        storageManager.addBitcoins(amount: amount)
         coordinator?.navigationController.popViewController(animated: true)
     }
     

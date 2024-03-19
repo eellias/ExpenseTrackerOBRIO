@@ -86,8 +86,12 @@ class HomeViewController: UIViewController, HomeViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewDidLoad()
         setupUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.viewDidLoad()
     }
     
     func setupUI() {
