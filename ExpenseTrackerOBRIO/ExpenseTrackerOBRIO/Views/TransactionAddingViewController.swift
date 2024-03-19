@@ -61,7 +61,6 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        amountTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
     
     func setupUI() {
@@ -69,6 +68,9 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         view.addSubview(amountTextField)
         view.addSubview(categoryPicker)
         view.addSubview(addTransactionButton)
+        
+        amountTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        amountTextField.delegate = self
         
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
@@ -83,6 +85,12 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         
         addTransactionButton.isEnabled = canSave
         addTransactionButton.addTarget(self, action: #selector(addTransactionTapped), for: .touchUpInside)
+        
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(dismissKeyboard))
+        toolbar.setItems([doneButton], animated: true)
+        amountTextField.inputAccessoryView = toolbar
         
         setConstraints()
     }
@@ -127,6 +135,10 @@ extension TransactionAddingViewController {
         addTransactionButton.isEnabled = canSave
     }
     
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     func didSelectTransactionCategory(_ category: String) {
         self.selectedCategory = category
     }
@@ -148,5 +160,13 @@ extension TransactionAddingViewController: UIPickerViewDelegate, UIPickerViewDat
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let selectedCategory = transactionCategories[row]
         presenter.didSelectTransactionCategory(selectedCategory)
+    }
+}
+
+
+extension TransactionAddingViewController: UITextFieldDelegate {
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
