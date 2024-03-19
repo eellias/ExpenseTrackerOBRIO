@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     private var currentPage = 1
     private let pageSize = 20
     
-    var currencyLabel: UILabel = {
+    private var currencyLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = .systemFont(ofSize: 18)
@@ -35,7 +35,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
     
-    var lastUpdatedLabel: UILabel = {
+    private var lastUpdatedLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = .systemFont(ofSize: 10)
@@ -46,7 +46,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
     
-    var balanceLabel: UILabel = {
+    private var balanceLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = .systemFont(ofSize: 48)
@@ -55,7 +55,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
     
-    var addBitcoinsButton: UIButton = {
+    private var addBitcoinsButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
@@ -65,7 +65,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         return button
     }()
     
-    var addTransactionButton: UIButton = {
+    private var addTransactionButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.cornerStyle = .capsule
         configuration.baseBackgroundColor = .blue
@@ -78,7 +78,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         return button
     }()
     
-    var transactionsTableView: UITableView = {
+    private var transactionsTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
