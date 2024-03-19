@@ -9,6 +9,7 @@ import Foundation
 
 protocol HomePresenterProtocol {
     var view: HomeViewProtocol? { get set }
+    var coordinator: AppCoordinator? { get set }
     var transactions: [Transaction] { get set }
     var groupedTransactions: [Date:[Transaction]] { get }
     func viewDidLoad()
@@ -18,11 +19,14 @@ protocol HomePresenterProtocol {
     func addBitcoinsToBalance(amount: Double)
     func loadMoreTransactions(page: Int, pageSize: Int)
     func updateTransactions()
+    func addTransaction()
 }
 
 class HomePresenter: HomePresenterProtocol {
     
     weak var view: HomeViewProtocol?
+    weak var coordinator: AppCoordinator?
+    
     let mockCurrency: BitcoinCurrency
     
     let storageManager = StorageManager.shared
@@ -87,6 +91,10 @@ class HomePresenter: HomePresenterProtocol {
             self.transactions.append(contentsOf: newTransactions)
             view?.updateTransactions(newTransactions: newTransactions)
         }
+    }
+    
+    func addTransaction() {
+        coordinator?.navigateToTransactionAddingScreen()
     }
 }
 

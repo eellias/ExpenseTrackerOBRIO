@@ -9,9 +9,10 @@ import Foundation
 
 protocol TransactionAddingPresenterProtocol {
     var view: TransactionAddingViewProtocol? { get set }
-    
+    var coordinator: AppCoordinator? { get set }
 }
 
 class TransactionAddingPresenter: TransactionAddingPresenterProtocol {
     weak var view: TransactionAddingViewProtocol?
+    weak var coordinator: AppCoordinator?
 }

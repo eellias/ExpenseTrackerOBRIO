@@ -14,7 +14,6 @@ protocol TransactionAddingViewProtocol: AnyObject {
 
 class TransactionAddingViewController: UIViewController, TransactionAddingViewProtocol {
     var presenter: TransactionAddingPresenterProtocol!
-    weak var coordinator: AppCoordinator?
     
     override func viewDidLoad() {
         view.backgroundColor = .blue

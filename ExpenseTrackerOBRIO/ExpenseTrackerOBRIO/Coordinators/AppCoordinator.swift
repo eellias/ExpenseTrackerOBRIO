@@ -25,8 +25,8 @@ final class AppCoordinator: Coordinator {
         let homeViewController = HomeViewController()
         let homePresenter = HomePresenter()
         homePresenter.view = homeViewController
+        homePresenter.coordinator = self
         homeViewController.presenter = homePresenter
-        homeViewController.coordinator = self
         navigationController.pushViewController(homeViewController, animated: false)
     }
     
@@ -34,8 +34,8 @@ final class AppCoordinator: Coordinator {
         let transactionAddingViewController = TransactionAddingViewController()
         let transactionAddingPresenter = TransactionAddingPresenter()
         transactionAddingPresenter.view = transactionAddingViewController
+        transactionAddingPresenter.coordinator = self
         transactionAddingViewController.presenter = transactionAddingPresenter
-        transactionAddingViewController.coordinator = self
         navigationController.pushViewController(transactionAddingViewController, animated: true)
     }
 }

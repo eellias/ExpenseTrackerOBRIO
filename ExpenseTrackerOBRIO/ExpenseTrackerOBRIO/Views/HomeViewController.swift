@@ -19,7 +19,7 @@ protocol HomeViewProtocol: AnyObject {
 
 class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol!
-    weak var coordinator: AppCoordinator?
+    
     
     private var hasMoreData = true
     
@@ -227,7 +227,7 @@ extension HomeViewController {
     }
     
     @objc func addTransaction() {
-        coordinator?.navigateToTransactionAddingScreen()
+        presenter.addTransaction()
     }
 }
 
