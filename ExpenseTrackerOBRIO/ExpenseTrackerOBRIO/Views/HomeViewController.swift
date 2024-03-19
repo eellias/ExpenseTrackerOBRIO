@@ -115,7 +115,7 @@ extension HomeViewController {
         transactionsTableView.register(TransactionCell.self, forCellReuseIdentifier: TransactionCell.identifier)
         
         addBitcoinsButton.addTarget(self, action: #selector(presentAddBitcoinsPopup), for: .touchUpInside)
-        addTransactionButton.addTarget(self, action: #selector(addTransaction), for: .touchUpInside)
+        addTransactionButton.addTarget(self, action: #selector(addTransactionTapped), for: .touchUpInside)
         
         setConstraints()
     }
@@ -254,7 +254,7 @@ extension HomeViewController {
         }
     }
     
-    @objc func addTransaction() {
+    @objc func addTransactionTapped() {
         presenter.addTransaction()
         self.currentPage = 1
         self.hasMoreData = true
