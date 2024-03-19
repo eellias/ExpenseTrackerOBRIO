@@ -114,7 +114,7 @@ extension HomeViewController {
         transactionsTableView.dataSource = self
         transactionsTableView.register(TransactionCell.self, forCellReuseIdentifier: TransactionCell.identifier)
         
-        addBitcoinsButton.addTarget(self, action: #selector(presentAddBitcoinsPopup), for: .touchUpInside)
+        addBitcoinsButton.addTarget(self, action: #selector(addBitcoinsButtonTapped), for: .touchUpInside)
         addTransactionButton.addTarget(self, action: #selector(addTransactionTapped), for: .touchUpInside)
         
         setConstraints()
@@ -195,7 +195,11 @@ extension HomeViewController {
         balanceLabel.text = String(format: "%.2f", balance)
     }
     
-    @objc func presentAddBitcoinsPopup() {
+    @objc func addBitcoinsButtonTapped() {
+        presenter.presentAddBitcoinsPopup()
+    }
+    
+    func presentAddBitcoinsPopup() {
         let alertController = UIAlertController(title: "How many bitcoins do you want to add?", message: nil, preferredStyle: .alert)
         
         alertController.addTextField { (textField) in

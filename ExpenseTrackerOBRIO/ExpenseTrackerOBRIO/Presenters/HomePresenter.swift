@@ -81,6 +81,10 @@ class HomePresenter: HomePresenterProtocol {
     func addTransaction() {
         coordinator?.navigateToTransactionAddingScreen()
     }
+    
+    func presentAddBitcoinsPopup() {
+        view?.presentAddBitcoinsPopup()
+    }
 }
 
 extension HomePresenter {

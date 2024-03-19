@@ -20,4 +20,5 @@ protocol HomePresenterProtocol {
     func loadMoreTransactions(page: Int, pageSize: Int)
     func updateTransactions()
     func addTransaction()
+    func presentAddBitcoinsPopup()
 }

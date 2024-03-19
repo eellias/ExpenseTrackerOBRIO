@@ -14,4 +14,5 @@ protocol HomeViewProtocol: AnyObject {
     func presentAlert()
     func reloadTransactions()
     func updateTransactions(newTransactions: [Transaction])
+    func presentAddBitcoinsPopup()
 }
