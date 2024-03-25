@@ -206,6 +206,7 @@ extension HomeViewController {
             textField.placeholder = "Amount"
             textField.keyboardType = .decimalPad
             textField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+            textField.delegate = self
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -301,5 +302,55 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
                 self.loadMoreData()
             }
         }
+    }
+}
+
+extension HomeViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let currentText = textField.text else {
+            return true
+        }
+
+        let allowedCharacterSet = CharacterSet(charactersIn: "0123456789,")
+        let replacementStringCharacterSet = CharacterSet(charactersIn: string)
+        let isAllowed = replacementStringCharacterSet.isSubset(of: allowedCharacterSet)
+
+        if !isAllowed {
+            return false
+        }
+
+        if string == "," {
+            if currentText.contains(",") {
+                return false
+            }
+        }
+
+        if currentText == "0" && string != "," {
+            textField.text = string
+            return false
+        }
+
+        if currentText == "0" && string == "," {
+            textField.text = "0,"
+            return false
+        }
+
+        if currentText.isEmpty && string == "," {
+            textField.text = "0,"
+            return false
+        }
+        
+        if let dotIndex = currentText.firstIndex(of: ",") {
+            let fractionPart = currentText[dotIndex...]
+            if fractionPart.count > 6 {
+                if string == "" {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+
+        return true
     }
 }
