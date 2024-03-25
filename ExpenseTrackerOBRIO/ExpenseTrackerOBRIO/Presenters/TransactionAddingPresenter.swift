@@ -15,13 +15,12 @@ class TransactionAddingPresenter: TransactionAddingPresenterProtocol {
     let storageManager = StorageManager.shared
     
     init() {
-        print("init")
         self.balance = storageManager.fetchBalance()?.balance ?? 0.0
     }
     
     func addTransaction(amount: Double, category: String) {
         storageManager.addTransaction(type: true, amount: amount, category: category)
-        storageManager.addBitcoins(amount: amount)
+        storageManager.addBitcoins(amount: -amount)
         coordinator?.navigationController.popViewController(animated: true)
     }
     

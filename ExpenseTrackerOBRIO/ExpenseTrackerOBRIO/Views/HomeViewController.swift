@@ -62,7 +62,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
         configuration.cornerStyle = .capsule
         configuration.baseBackgroundColor = .blue
         configuration.baseForegroundColor = .white
-        configuration.title = "New transaction"
+        configuration.title = "Add transaction"
         configuration.titleAlignment = .center
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14)
         let button = UIButton(configuration: configuration, primaryAction: nil)
@@ -72,6 +72,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     
     private var transactionsTableView: UITableView = {
         let tableView = UITableView()
+        tableView.allowsSelection = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -192,7 +193,12 @@ extension HomeViewController {
     }
     
     func updateBalance(balance: Double) {
-        balanceLabel.text = String(format: "%.2f", balance)
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 4
+        formatter.minimumFractionDigits = 1
+        formatter.roundingMode = .down
+        
+        balanceLabel.text = formatter.string(from: NSNumber(value: balance))
     }
     
     @objc func addBitcoinsButtonTapped() {

@@ -97,7 +97,7 @@ class TransactionCell: UITableViewCell {
     public func configure(with model: Transaction) {
         transactionImage.image = UIImage(systemName: model.transactionType ? "arrowshape.up.fill" : "arrowshape.down.fill")?.withRenderingMode(.alwaysTemplate)
         transactionImage.tintColor = model.transactionType ? .red : .green
-        amountLabel.text = String(format: "%.2f", model.transactionAmount)
+        amountLabel.text = String(model.transactionAmount)
         dateLabel.text = model.transactionDate?.format("dd MMM yyyy HH:mm")
         categoryLabel.text = model.transactionCategory ?? ""
     }

@@ -34,7 +34,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         configuration.cornerStyle = .capsule
         configuration.baseBackgroundColor = .blue
         configuration.baseForegroundColor = .white
-        configuration.title = "Add transaction"
+        configuration.title = "Add"
         configuration.titleAlignment = .center
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14)
         
