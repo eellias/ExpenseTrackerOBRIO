@@ -14,7 +14,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
     var selectedCategory: String?
     
     var canSave: Bool {
-        guard let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount > 0.0 else {
+        guard let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount > 0.0, amount <= presenter.balance else {
             return false
         }
         return true
@@ -122,7 +122,7 @@ extension TransactionAddingViewController {
 // MARK: - User actions functions
 extension TransactionAddingViewController {
     @objc func addTransactionTapped() {
-        if let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount > 0.0 {
+        if let text = amountTextField.text, let amount = Double(text.replacingOccurrences(of: ",", with: ".")), amount > 0.0, amount <= presenter.balance {
             presenter.addTransaction(amount: amount, category: self.selectedCategory ?? "Other")
         }
     }
@@ -164,6 +164,54 @@ extension TransactionAddingViewController: UIPickerViewDelegate, UIPickerViewDat
 extension TransactionAddingViewController: UITextFieldDelegate {
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let currentText = textField.text else {
+            return true
+        }
+
+        let allowedCharacterSet = CharacterSet(charactersIn: "0123456789,")
+        let replacementStringCharacterSet = CharacterSet(charactersIn: string)
+        let isAllowed = replacementStringCharacterSet.isSubset(of: allowedCharacterSet)
+
+        if !isAllowed {
+            return false
+        }
+
+        if string == "," {
+            if currentText.contains(",") {
+                return false
+            }
+        }
+
+        if currentText == "0" && string != "," {
+            textField.text = string
+            return false
+        }
+
+        if currentText == "0" && string == "," {
+            textField.text = "0,"
+            return false
+        }
+
+        if currentText.isEmpty && string == "," {
+            textField.text = "0,"
+            return false
+        }
+        
+        if let dotIndex = currentText.firstIndex(of: ",") {
+            let fractionPart = currentText[dotIndex...]
+            if fractionPart.count > 6 {
+                if string == "" {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+
         return true
     }
 }

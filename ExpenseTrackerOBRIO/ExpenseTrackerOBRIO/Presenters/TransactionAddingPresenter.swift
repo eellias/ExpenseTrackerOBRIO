@@ -10,8 +10,14 @@ import Foundation
 class TransactionAddingPresenter: TransactionAddingPresenterProtocol {
     weak var view: TransactionAddingViewProtocol?
     weak var coordinator: AppCoordinator?
+    var balance: Double
     
     let storageManager = StorageManager.shared
+    
+    init() {
+        print("init")
+        self.balance = storageManager.fetchBalance()?.balance ?? 0.0
+    }
     
     func addTransaction(amount: Double, category: String) {
         storageManager.addTransaction(type: true, amount: amount, category: category)

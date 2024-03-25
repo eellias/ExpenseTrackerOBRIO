@@ -10,6 +10,7 @@ import Foundation
 protocol TransactionAddingPresenterProtocol {
     var view: TransactionAddingViewProtocol? { get set }
     var coordinator: AppCoordinator? { get set }
+    var balance: Double { get set }
     
     func addTransaction(amount: Double, category: String)
     func didSelectTransactionCategory(_ category: String)
