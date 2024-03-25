@@ -95,9 +95,15 @@ class TransactionCell: UITableViewCell {
     }
     
     public func configure(with model: Transaction) {
-        transactionImage.image = UIImage(systemName: model.transactionType ? "arrowshape.up.fill" : "arrowshape.down.fill")?.withRenderingMode(.alwaysTemplate)
+        transactionImage.image = UIImage(systemName: model.transactionType ? "arrow.up.circle" : "arrow.down.circle")?.withRenderingMode(.alwaysTemplate)
         transactionImage.tintColor = model.transactionType ? .red : .green
-        amountLabel.text = String(model.transactionAmount)
+        
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 6
+        formatter.minimumFractionDigits = 1
+        formatter.roundingMode = .down
+        
+        amountLabel.text = formatter.string(from: NSNumber(value: model.transactionAmount))
         dateLabel.text = model.transactionDate?.format("dd MMM yyyy HH:mm")
         categoryLabel.text = model.transactionCategory ?? ""
     }

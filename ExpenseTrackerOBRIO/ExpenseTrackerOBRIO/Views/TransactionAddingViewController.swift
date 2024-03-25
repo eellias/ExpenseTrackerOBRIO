@@ -26,6 +26,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         textField.placeholder = "Enter amount"
         textField.borderStyle = .roundedRect
         textField.keyboardType = .decimalPad
+        textField.overrideUserInterfaceStyle = .light
         return textField
     }()
     
@@ -40,6 +41,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         
         let button = UIButton(configuration: configuration, primaryAction: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.overrideUserInterfaceStyle = .light
         
         return button
     }()
@@ -47,6 +49,7 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
     private var categoryPicker: UIPickerView = {
         let picker = UIPickerView()
         picker.translatesAutoresizingMaskIntoConstraints = false
+        picker.overrideUserInterfaceStyle = .light
         return picker
     }()
     
@@ -159,7 +162,12 @@ extension TransactionAddingViewController {
     }
     
     func updateTransactionLimits(maxAmount: Double) {
-        limitsLabel.text = "Transaction limit: 0.0 – \(maxAmount)"
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 6
+        formatter.minimumFractionDigits = 1
+        formatter.roundingMode = .down
+        
+        limitsLabel.text = "Transaction limit: 0.0 – \(formatter.string(from: NSNumber(value: maxAmount)) ?? "0.0")"
     }
 }
 

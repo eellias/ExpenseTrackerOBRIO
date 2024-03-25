@@ -73,6 +73,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     private var transactionsTableView: UITableView = {
         let tableView = UITableView()
         tableView.allowsSelection = false
+        tableView.overrideUserInterfaceStyle = .light
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -230,6 +231,7 @@ extension HomeViewController {
         
         alertController.addAction(cancelAction)
         alertController.addAction(addAction)
+        alertController.overrideUserInterfaceStyle = .light
         
         present(alertController, animated: true, completion: nil)
     }
