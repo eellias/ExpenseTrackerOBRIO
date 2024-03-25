@@ -14,4 +14,5 @@ protocol TransactionAddingPresenterProtocol {
     
     func addTransaction(amount: Double, category: String)
     func didSelectTransactionCategory(_ category: String)
+    func updateTransactionLimits()
 }

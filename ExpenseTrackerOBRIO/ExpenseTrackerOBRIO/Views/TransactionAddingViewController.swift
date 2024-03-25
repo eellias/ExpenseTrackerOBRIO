@@ -50,8 +50,18 @@ class TransactionAddingViewController: UIViewController, TransactionAddingViewPr
         return picker
     }()
     
+    private var limitsLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .gray
+        label.font = .systemFont(ofSize: 10)
+        label.textAlignment = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.updateTransactionLimits()
         setupUI()
     }
 }
@@ -63,6 +73,7 @@ extension TransactionAddingViewController {
         view.addSubview(amountTextField)
         view.addSubview(categoryPicker)
         view.addSubview(addTransactionButton)
+        view.addSubview(limitsLabel)
         
         amountTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         amountTextField.delegate = self
@@ -94,6 +105,7 @@ extension TransactionAddingViewController {
         setAmountTextFieldConstraints()
         setCategoryPickerConstraints()
         setAddTransactionButtonConstraints()
+        setLimitsLabelConstraints()
     }
     
     private func setAmountTextFieldConstraints() {
@@ -106,7 +118,7 @@ extension TransactionAddingViewController {
     
     private func setCategoryPickerConstraints() {
         NSLayoutConstraint.activate([
-            categoryPicker.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 24),
+            categoryPicker.topAnchor.constraint(equalTo: limitsLabel.bottomAnchor, constant: 24),
             categoryPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -115,6 +127,13 @@ extension TransactionAddingViewController {
         NSLayoutConstraint.activate([
             addTransactionButton.topAnchor.constraint(equalTo: categoryPicker.bottomAnchor, constant: 24),
             addTransactionButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    private func setLimitsLabelConstraints() {
+        NSLayoutConstraint.activate([
+            limitsLabel.leadingAnchor.constraint(equalTo: amountTextField.leadingAnchor),
+            limitsLabel.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 10)
         ])
     }
 }
@@ -137,6 +156,10 @@ extension TransactionAddingViewController {
     
     func didSelectTransactionCategory(_ category: String) {
         self.selectedCategory = category
+    }
+    
+    func updateTransactionLimits(maxAmount: Double) {
+        limitsLabel.text = "Transaction limit: 0.0 – \(maxAmount)"
     }
 }
 

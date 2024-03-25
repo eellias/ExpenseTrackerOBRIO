@@ -27,4 +27,8 @@ class TransactionAddingPresenter: TransactionAddingPresenterProtocol {
     func didSelectTransactionCategory(_ category: String) {
         view?.didSelectTransactionCategory(category)
     }
+    
+    func updateTransactionLimits() {
+        view?.updateTransactionLimits(maxAmount: self.balance)
+    }
 }

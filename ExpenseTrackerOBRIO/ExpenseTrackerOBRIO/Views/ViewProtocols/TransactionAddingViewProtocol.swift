@@ -11,4 +11,5 @@ protocol TransactionAddingViewProtocol: AnyObject {
     var selectedCategory: String? { get set }
     func addTransactionTapped()
     func didSelectTransactionCategory(_ category: String)
+    func updateTransactionLimits(maxAmount: Double)
 }
